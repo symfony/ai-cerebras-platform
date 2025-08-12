@@ -44,7 +44,7 @@ final readonly class ResultConverter implements ResultConverterInterface
 
         if (!isset($data['choices'][0]['message']['content'])) {
             if (isset($data['type'], $data['message']) && str_ends_with($data['type'], 'error')) {
-                throw new RuntimeException(sprintf('Cerebras API error: %s', $data['message']));
+                throw new RuntimeException(\sprintf('Cerebras API error: %s', $data['message']));
             }
 
             throw new RuntimeException('Response does not contain output.');
@@ -74,4 +74,3 @@ final readonly class ResultConverter implements ResultConverterInterface
         }
     }
 }
-

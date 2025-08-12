@@ -53,7 +53,7 @@ final readonly class ModelClient implements ModelClientInterface
                 [
                     'headers' => [
                         'Content-Type' => 'application/json',
-                        'Authorization' => sprintf('Bearer %s', $this->apiKey),
+                        'Authorization' => \sprintf('Bearer %s', $this->apiKey),
                     ],
                     'json' => \is_array($payload) ? array_merge($payload, $options) : $payload,
                 ]
@@ -61,4 +61,3 @@ final readonly class ModelClient implements ModelClientInterface
         );
     }
 }
-
