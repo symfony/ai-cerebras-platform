@@ -87,6 +87,18 @@ class ModelClientTest extends TestCase
         $this->assertSame($expectedResponse, $data);
     }
 
+    public function testCustomBaseUrlIsUsedAndTrailingSlashNormalized()
+    {
+        $httpClient = new MockHttpClient(function (string $method, string $url) {
+            $this->assertSame('https://cerebras.example.com/v1/chat/completions', $url);
+
+            return new JsonMockResponse(['choices' => []]);
+        });
+
+        $client = new ModelClient($httpClient, 'csk-1234567890abcdef', 'https://cerebras.example.com/');
+        $client->request(new Model('llama-3.3-70b'), ['messages' => [['role' => 'user', 'content' => 'Hello']]]);
+    }
+
     public function testMalformedUtf8InPayloadDoesNotAbortTheRequest()
     {
         $httpClient = new MockHttpClient(function (string $method, string $url, array $options) {

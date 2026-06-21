@@ -38,12 +38,13 @@ final class Factory
         ?Contract $contract = null,
         ?EventDispatcherInterface $eventDispatcher = null,
         string $name = 'cerebras',
+        string $baseUrl = 'https://api.cerebras.ai',
     ): ProviderInterface {
         $httpClient = $httpClient instanceof EventSourceHttpClient ? $httpClient : new EventSourceHttpClient($httpClient);
 
         return new Provider(
             $name,
-            [new ModelClient($httpClient, $apiKey)],
+            [new ModelClient($httpClient, $apiKey, $baseUrl)],
             [new ResultConverter()],
             $modelCatalog,
             $contract ?? Contract::create([
@@ -64,9 +65,10 @@ final class Factory
         ?EventDispatcherInterface $eventDispatcher = null,
         string $name = 'cerebras',
         ?ModelRouterInterface $modelRouter = null,
+        string $baseUrl = 'https://api.cerebras.ai',
     ): Platform {
         return new Platform(
-            [self::createProvider($apiKey, $httpClient, $modelCatalog, $contract, $eventDispatcher, $name)],
+            [self::createProvider($apiKey, $httpClient, $modelCatalog, $contract, $eventDispatcher, $name, $baseUrl)],
             $modelRouter ?? new CatalogBasedModelRouter(),
             $eventDispatcher,
         );

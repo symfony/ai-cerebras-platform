@@ -27,10 +27,15 @@ final class ModelClient implements ModelClientInterface
     use JsonBodyEncodingTrait;
 
     private readonly EventSourceHttpClient $httpClient;
+    private readonly string $baseUrl;
 
+    /**
+     * @param string $baseUrl Base URL of a Cerebras-compatible endpoint, with or without a trailing slash
+     */
     public function __construct(
         HttpClientInterface $httpClient,
         #[\SensitiveParameter] private readonly string $apiKey,
+        string $baseUrl = 'https://api.cerebras.ai',
     ) {
         if ('' === $apiKey) {
             throw new InvalidArgumentException('The API key must not be empty.');
@@ -41,6 +46,7 @@ final class ModelClient implements ModelClientInterface
         }
 
         $this->httpClient = $httpClient instanceof EventSourceHttpClient ? $httpClient : new EventSourceHttpClient($httpClient);
+        $this->baseUrl = rtrim($baseUrl, '/');
     }
 
     public function supports(BaseModel $model): bool
@@ -56,7 +62,7 @@ final class ModelClient implements ModelClientInterface
 
         return new RawHttpResult(
             $this->httpClient->request(
-                'POST', 'https://api.cerebras.ai/v1/chat/completions',
+                'POST', $this->baseUrl.'/v1/chat/completions',
                 [
                     'headers' => [
                         'Content-Type' => 'application/json',
